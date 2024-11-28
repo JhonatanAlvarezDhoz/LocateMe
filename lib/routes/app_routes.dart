@@ -4,4 +4,6 @@ class AppRoutes {
   static const String homePage = "/homePage";
   static const String locationPage = "/locationPage";
   static const String userPage = "/userPage";
+  static const String loginPage = "/loginPage";
+  static const String registerPage = "/registerPage";
 }

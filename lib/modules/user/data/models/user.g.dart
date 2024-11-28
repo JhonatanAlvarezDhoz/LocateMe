@@ -107,19 +107,29 @@ int _userEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.email.length * 3;
   bytesCount += 3 + object.firstName.length * 3;
-  bytesCount += 3 + object.friendId.length * 3;
   {
-    for (var i = 0; i < object.friendId.length; i++) {
-      final value = object.friendId[i];
-      bytesCount += value.length * 3;
+    final list = object.friendId;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
     }
   }
   bytesCount += 3 + object.lastName.length * 3;
-  bytesCount += 3 + object.locationId.length * 3;
   {
-    for (var i = 0; i < object.locationId.length; i++) {
-      final value = object.locationId[i];
-      bytesCount += value.length * 3;
+    final list = object.locationId;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
     }
   }
   bytesCount += 3 + object.password.length * 3;
@@ -158,10 +168,10 @@ User _userDeserialize(
   final object = User(
     email: reader.readString(offsets[0]),
     firstName: reader.readString(offsets[1]),
-    friendId: reader.readStringList(offsets[2]) ?? [],
+    friendId: reader.readStringList(offsets[2]),
     id: id,
     lastName: reader.readString(offsets[3]),
-    locationId: reader.readStringList(offsets[4]) ?? [],
+    locationId: reader.readStringList(offsets[4]),
     password: reader.readString(offsets[5]),
     phoneNumber: reader.readString(offsets[6]),
     profilePhoto: reader.readStringOrNull(offsets[7]),
@@ -181,11 +191,11 @@ P _userDeserializeProp<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readStringList(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readStringList(offset)) as P;
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
@@ -738,6 +748,22 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
+  QueryBuilder<User, User, QAfterFilterCondition> friendIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'friendId',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> friendIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'friendId',
+      ));
+    });
+  }
+
   QueryBuilder<User, User, QAfterFilterCondition> friendIdElementEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1129,6 +1155,22 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'lastName',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> locationIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'locationId',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> locationIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'locationId',
       ));
     });
   }
@@ -1993,7 +2035,7 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
     });
   }
 
-  QueryBuilder<User, List<String>, QQueryOperations> friendIdProperty() {
+  QueryBuilder<User, List<String>?, QQueryOperations> friendIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'friendId');
     });
@@ -2005,7 +2047,7 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
     });
   }
 
-  QueryBuilder<User, List<String>, QQueryOperations> locationIdProperty() {
+  QueryBuilder<User, List<String>?, QQueryOperations> locationIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'locationId');
     });

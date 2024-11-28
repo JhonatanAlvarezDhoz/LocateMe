@@ -27,7 +27,7 @@ class CustomButton extends ElevatedButton {
               elevation: WidgetStateProperty.all(elevation ?? 0),
               shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
-                  borderRadius: borderRadius ?? BorderRadius.circular(20),
+                  borderRadius: borderRadius ?? BorderRadius.circular(8),
                   side: BorderSide(
                       color: borderColor ?? color ?? ThemeColors.white),
                 ),

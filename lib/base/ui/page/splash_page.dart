@@ -17,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     Future.delayed(const Duration(seconds: 5), () async {
       // in this point you can add functionality for init or validadte sesion
-      Navigator.of(context).pushReplacementNamed(AppRoutes.baseePage);
+      Navigator.of(context).pushReplacementNamed(AppRoutes.registerPage);
     });
     super.initState();
   }
@@ -38,6 +38,7 @@ class _SplashPageState extends State<SplashPage> {
                 child: const Icon(
                   Icons.location_on,
                   color: ThemeColors.white,
+                  size: 60,
                 )
                 // Image.asset(
                 //   "assets/images/logotitle.png",

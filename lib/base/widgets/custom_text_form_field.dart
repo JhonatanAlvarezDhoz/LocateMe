@@ -17,6 +17,7 @@ class CustomTextFormField extends StatelessWidget {
   final Color? borderColor;
   final Color? enabledBorderColor;
   final Color? hintColor;
+  final Color? labelColor;
   final Color? errorTextColor;
   final double? maxHeight;
   final double? maxWidth;
@@ -25,35 +26,41 @@ class CustomTextFormField extends StatelessWidget {
   final double fontSizeLabel;
   final int maxLines;
   final FontWeight fontWeightHint;
+  final FontWeight labelWeight;
+  final TextInputType? keyboardType;
 
-  const CustomTextFormField({
-    super.key,
-    required this.name,
-    this.labelText,
-    this.hintText,
-    this.errorText,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.initialValue,
-    this.isFilled = false,
-    this.borderColor,
-    this.enabledBorderColor,
-    this.hintColor,
-    this.errorTextColor,
-    this.maxHeight,
-    this.maxWidth,
-    this.borderWidth = 1.8,
-    this.fontSizeHint = 14,
-    this.fontSizeLabel = 18,
-    this.fontWeightHint = FontWeight.w300,
-    required this.maxLines,
-    this.iconRoute,
-  });
+  const CustomTextFormField(
+      {super.key,
+      required this.name,
+      this.labelText,
+      this.hintText,
+      this.errorText,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.initialValue,
+      this.isFilled = false,
+      this.borderColor,
+      this.enabledBorderColor,
+      this.hintColor,
+      this.errorTextColor,
+      this.maxHeight,
+      this.maxWidth,
+      this.labelColor,
+      this.borderWidth = 1,
+      this.fontSizeHint = 14,
+      this.fontSizeLabel = 18,
+      this.fontWeightHint = FontWeight.w300,
+      this.labelWeight = FontWeight.w500,
+      required this.maxLines,
+      this.iconRoute,
+      this.keyboardType = TextInputType.text,
+      required FormFieldValidator<String> validator});
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       name: name,
+      keyboardType: keyboardType,
       initialValue: initialValue,
       autovalidateMode: AutovalidateMode
           .onUserInteraction, // Cambia este modo según tu preferencia
@@ -70,6 +77,12 @@ class CustomTextFormField extends StatelessWidget {
         ),
         filled: isFilled,
         fillColor: isFilled ? ThemeColors.white : Colors.transparent,
+        labelText: labelText,
+        labelStyle: TextStyle(
+          fontSize: fontSizeLabel,
+          fontWeight: labelWeight,
+          color: labelColor ?? ThemeColors.secondary,
+        ),
         hintText: hintText,
         hintStyle: TextStyle(
           fontSize: fontSizeHint,
@@ -86,9 +99,10 @@ class CustomTextFormField extends StatelessWidget {
                 padding: const EdgeInsets.all(11.0),
                 child: SvgPicture.asset(
                   iconRoute!,
+                  width: 4,
                   fit: BoxFit.contain,
-                  colorFilter: const ColorFilter.mode(
-                    ThemeColors.ligth,
+                  colorFilter: ColorFilter.mode(
+                    ThemeColors.secondary.withOpacity(0.6),
                     BlendMode.srcIn,
                   ),
                 ),
@@ -98,7 +112,7 @@ class CustomTextFormField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
             width: borderWidth,
-            color: enabledBorderColor ?? ThemeColors.ligth.withOpacity(0.8),
+            color: enabledBorderColor ?? ThemeColors.whiteGray,
           ),
           borderRadius: BorderRadius.circular(10),
         ),

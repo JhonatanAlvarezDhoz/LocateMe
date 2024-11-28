@@ -19,8 +19,8 @@ class User {
 
   final String password;
   final String? profilePhoto;
-  final List<String> friendId;
-  final List<String> locationId;
+  final List<String>? friendId;
+  final List<String>? locationId;
 
   User({
     required this.id,
@@ -30,8 +30,8 @@ class User {
     required this.phoneNumber,
     required this.password,
     this.profilePhoto,
-    required this.friendId,
-    required this.locationId,
+    this.friendId,
+    this.locationId,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -42,8 +42,12 @@ class User {
         phoneNumber: json["phoneNumber"],
         password: json["password"],
         profilePhoto: json["profilePhoto"],
-        friendId: List<String>.from(json["friendId"].map((x) => x)),
-        locationId: List<String>.from(json["locationId"].map((x) => x)),
+        friendId: json["friendId"] != null
+            ? List<String>.from(json["friendId"].map((x) => x))
+            : null,
+        locationId: json["locationId"] != null
+            ? List<String>.from(json["locationId"].map((x) => x))
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -54,8 +58,12 @@ class User {
         "phoneNumber": phoneNumber,
         "password": password,
         "profilePhoto": profilePhoto,
-        "friendId": List<dynamic>.from(friendId.map((x) => x)),
-        "locationId": List<dynamic>.from(locationId.map((x) => x)),
+        "friendId": friendId != null
+            ? List<dynamic>.from(friendId!.map((x) => x))
+            : null,
+        "locationId": locationId != null
+            ? List<dynamic>.from(locationId!.map((x) => x))
+            : null,
       };
 }
 

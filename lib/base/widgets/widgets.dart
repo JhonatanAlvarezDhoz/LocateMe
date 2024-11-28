@@ -1,3 +1,6 @@
+export 'package:locate_me/base/widgets/custom_borders.dart';
+export 'package:locate_me/base/widgets/w_rounded_text_form_field.dart';
+
 export 'package:locate_me/base/widgets/w_profile_buttom.dart';
 
 export 'package:locate_me/base/widgets/w_custom_app_bar.dart';
