@@ -9,9 +9,9 @@ import 'package:provider/single_child_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final dependencies = Injector.dependencies;
+  const dependencies = Injector.dependencies;
   runApp(MainAppInjection(
-    dependencies: dependencies,
+    dependencies: await dependencies(),
   ));
 }
 

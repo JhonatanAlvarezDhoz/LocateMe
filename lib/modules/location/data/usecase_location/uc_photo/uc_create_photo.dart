@@ -23,7 +23,7 @@ class UcCreatePhoto extends UseCase<bool, UcCreatePhotoParams> {
         case true:
           return true;
         case false:
-          throw UseCaseException("No pudo crear una photo. Intente mas tarde");
+          return false;
         default:
           throw UseCaseException(
               "Hubo un error al momento de crear una photo. Por favor contactar con el administrador.");

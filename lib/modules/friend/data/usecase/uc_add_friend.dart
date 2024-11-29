@@ -11,19 +11,19 @@ class UcAddFriendParams {
 }
 
 class UcAddFriend extends UseCase<bool, UcAddFriendParams> {
-  final FrinedRepository userRepository;
+  final FrinedRepository friendRepository;
 
-  UcAddFriend({required this.userRepository});
+  UcAddFriend({required this.friendRepository});
   @override
   Future<bool> call({UcAddFriendParams? params}) async {
     try {
-      final bool response = await userRepository.addFriend(params!.friend);
+      final bool response = await friendRepository.addFriend(params!.friend);
 
       switch (response) {
         case true:
           return true;
         case false:
-          throw UseCaseException("No pudo agregar un amigo. Intente mas tarde");
+          return false;
         default:
           throw UseCaseException(
               "Hubo un error al momento de agregar un amigo. Por favor contactar con el administrador.");

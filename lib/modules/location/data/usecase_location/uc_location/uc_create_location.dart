@@ -24,8 +24,7 @@ class UcCreateLocation extends UseCase<bool, UcCreateLocationParams> {
         case true:
           return true;
         case false:
-          throw UseCaseException(
-              "No pudo crear una location. Intente mas tarde");
+          return false;
         default:
           throw UseCaseException(
               "Hubo un error al momento de crear una location. Por favor contactar con el administrador.");

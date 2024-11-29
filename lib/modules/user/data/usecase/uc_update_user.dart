@@ -28,8 +28,7 @@ class UcUpdateUser extends UseCase<bool, UcUpdateUserParams> {
         case true:
           return true;
         case false:
-          throw UseCaseException(
-              "No pudo editar el usuario. Intente mas tarde");
+          return false;
         default:
           throw UseCaseException(
               "Hubo un error al momento de editar el usuario. Por favor contactar con el administrador.");
