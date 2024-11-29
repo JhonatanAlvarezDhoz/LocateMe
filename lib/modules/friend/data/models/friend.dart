@@ -7,17 +7,13 @@ part 'friend.g.dart';
 @collection
 class Friend {
   Id id = Isar.autoIncrement;
-  final String firstName;
-  final String lastName;
-
-  @Index(unique: true)
-  final String email;
-
-  @Index(unique: true)
-  final String phoneNumber;
-
-  final String? profilePhoto;
-  final List<String> locationId;
+  String firstName;
+  String lastName;
+  String email;
+  String phoneNumber;
+  int userId;
+  String? profilePhoto;
+  List<int> locationId;
 
   Friend({
     required this.id,
@@ -25,6 +21,7 @@ class Friend {
     required this.lastName,
     required this.email,
     required this.phoneNumber,
+    required this.userId,
     this.profilePhoto,
     required this.locationId,
   });
@@ -35,8 +32,9 @@ class Friend {
         lastName: json["lastName"],
         email: json["email"],
         phoneNumber: json["phoneNumber"],
+        userId: json["userId"],
         profilePhoto: json["profilePhoto"],
-        locationId: List<String>.from(json["locationId"].map((x) => x)),
+        locationId: List<int>.from(json["locationId"].map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {
@@ -44,9 +42,10 @@ class Friend {
         "firstName": firstName,
         "lastName": lastName,
         "email": email,
+        "userId": userId,
         "phoneNumber": phoneNumber,
         "profilePhoto": profilePhoto,
-        "locationId": List<dynamic>.from(locationId.map((x) => x)),
+        "locationId": List<int>.from(locationId.map((x) => x)),
       };
 }
 

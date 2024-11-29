@@ -22,13 +22,18 @@ const PhotoSchema = CollectionSchema(
       name: r'latitude',
       type: IsarType.double,
     ),
-    r'longitude': PropertySchema(
+    r'locationId': PropertySchema(
       id: 1,
+      name: r'locationId',
+      type: IsarType.long,
+    ),
+    r'longitude': PropertySchema(
+      id: 2,
       name: r'longitude',
       type: IsarType.double,
     ),
     r'photoBytes': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'photoBytes',
       type: IsarType.string,
     )
@@ -64,8 +69,9 @@ void _photoSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDouble(offsets[0], object.latitude);
-  writer.writeDouble(offsets[1], object.longitude);
-  writer.writeString(offsets[2], object.photoBytes);
+  writer.writeLong(offsets[1], object.locationId);
+  writer.writeDouble(offsets[2], object.longitude);
+  writer.writeString(offsets[3], object.photoBytes);
 }
 
 Photo _photoDeserialize(
@@ -76,8 +82,9 @@ Photo _photoDeserialize(
 ) {
   final object = Photo(
     latitude: reader.readDouble(offsets[0]),
-    longitude: reader.readDouble(offsets[1]),
-    photoBytes: reader.readString(offsets[2]),
+    locationId: reader.readLong(offsets[1]),
+    longitude: reader.readDouble(offsets[2]),
+    photoBytes: reader.readString(offsets[3]),
   );
   object.id = id;
   return object;
@@ -93,8 +100,10 @@ P _photoDeserializeProp<P>(
     case 0:
       return (reader.readDouble(offset)) as P;
     case 1:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
+      return (reader.readDouble(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -299,6 +308,59 @@ extension PhotoQueryFilter on QueryBuilder<Photo, Photo, QFilterCondition> {
         upper: upper,
         includeUpper: includeUpper,
         epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Photo, Photo, QAfterFilterCondition> locationIdEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'locationId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Photo, Photo, QAfterFilterCondition> locationIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'locationId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Photo, Photo, QAfterFilterCondition> locationIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'locationId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Photo, Photo, QAfterFilterCondition> locationIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'locationId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -513,6 +575,18 @@ extension PhotoQuerySortBy on QueryBuilder<Photo, Photo, QSortBy> {
     });
   }
 
+  QueryBuilder<Photo, Photo, QAfterSortBy> sortByLocationId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'locationId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Photo, Photo, QAfterSortBy> sortByLocationIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'locationId', Sort.desc);
+    });
+  }
+
   QueryBuilder<Photo, Photo, QAfterSortBy> sortByLongitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'longitude', Sort.asc);
@@ -563,6 +637,18 @@ extension PhotoQuerySortThenBy on QueryBuilder<Photo, Photo, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Photo, Photo, QAfterSortBy> thenByLocationId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'locationId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Photo, Photo, QAfterSortBy> thenByLocationIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'locationId', Sort.desc);
+    });
+  }
+
   QueryBuilder<Photo, Photo, QAfterSortBy> thenByLongitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'longitude', Sort.asc);
@@ -595,6 +681,12 @@ extension PhotoQueryWhereDistinct on QueryBuilder<Photo, Photo, QDistinct> {
     });
   }
 
+  QueryBuilder<Photo, Photo, QDistinct> distinctByLocationId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'locationId');
+    });
+  }
+
   QueryBuilder<Photo, Photo, QDistinct> distinctByLongitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'longitude');
@@ -619,6 +711,12 @@ extension PhotoQueryProperty on QueryBuilder<Photo, Photo, QQueryProperty> {
   QueryBuilder<Photo, double, QQueryOperations> latitudeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'latitude');
+    });
+  }
+
+  QueryBuilder<Photo, int, QQueryOperations> locationIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'locationId');
     });
   }
 

@@ -22,35 +22,30 @@ const LocationSchema = CollectionSchema(
       name: r'description',
       type: IsarType.string,
     ),
-    r'friendId': PropertySchema(
-      id: 1,
-      name: r'friendId',
-      type: IsarType.string,
-    ),
     r'latitude': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'latitude',
       type: IsarType.double,
     ),
     r'longitude': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'longitude',
       type: IsarType.double,
     ),
     r'name': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     ),
-    r'photos': PropertySchema(
-      id: 5,
-      name: r'photos',
-      type: IsarType.stringList,
+    r'photoId': PropertySchema(
+      id: 4,
+      name: r'photoId',
+      type: IsarType.longList,
     ),
     r'userId': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'userId',
-      type: IsarType.string,
+      type: IsarType.long,
     )
   },
   estimateSize: _locationEstimateSize,
@@ -88,21 +83,8 @@ int _locationEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.description.length * 3;
-  {
-    final value = object.friendId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   bytesCount += 3 + object.name.length * 3;
-  bytesCount += 3 + object.photos.length * 3;
-  {
-    for (var i = 0; i < object.photos.length; i++) {
-      final value = object.photos[i];
-      bytesCount += value.length * 3;
-    }
-  }
-  bytesCount += 3 + object.userId.length * 3;
+  bytesCount += 3 + object.photoId.length * 8;
   return bytesCount;
 }
 
@@ -113,12 +95,11 @@ void _locationSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.description);
-  writer.writeString(offsets[1], object.friendId);
-  writer.writeDouble(offsets[2], object.latitude);
-  writer.writeDouble(offsets[3], object.longitude);
-  writer.writeString(offsets[4], object.name);
-  writer.writeStringList(offsets[5], object.photos);
-  writer.writeString(offsets[6], object.userId);
+  writer.writeDouble(offsets[1], object.latitude);
+  writer.writeDouble(offsets[2], object.longitude);
+  writer.writeString(offsets[3], object.name);
+  writer.writeLongList(offsets[4], object.photoId);
+  writer.writeLong(offsets[5], object.userId);
 }
 
 Location _locationDeserialize(
@@ -129,13 +110,12 @@ Location _locationDeserialize(
 ) {
   final object = Location(
     description: reader.readString(offsets[0]),
-    friendId: reader.readStringOrNull(offsets[1]),
     id: id,
-    latitude: reader.readDouble(offsets[2]),
-    longitude: reader.readDouble(offsets[3]),
-    name: reader.readString(offsets[4]),
-    photos: reader.readStringList(offsets[5]) ?? [],
-    userId: reader.readString(offsets[6]),
+    latitude: reader.readDouble(offsets[1]),
+    longitude: reader.readDouble(offsets[2]),
+    name: reader.readString(offsets[3]),
+    photoId: reader.readLongList(offsets[4]) ?? [],
+    userId: reader.readLong(offsets[5]),
   );
   return object;
 }
@@ -150,17 +130,15 @@ P _locationDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 2:
       return (reader.readDouble(offset)) as P;
     case 3:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongList(offset) ?? []) as P;
     case 5:
-      return (reader.readStringList(offset) ?? []) as P;
-    case 6:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -485,152 +463,6 @@ extension LocationQueryFilter
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'friendId',
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'friendId',
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'friendId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'friendId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'friendId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'friendId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'friendId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'friendId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'friendId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'friendId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'friendId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> friendIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'friendId',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<Location, Location, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -937,145 +769,66 @@ extension LocationQueryFilter
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosElementEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdElementEqualTo(
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'photos',
+        property: r'photoId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition>
-      photosElementGreaterThan(
-    String value, {
+      photoIdElementGreaterThan(
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'photos',
+        property: r'photoId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosElementLessThan(
-    String value, {
+  QueryBuilder<Location, Location, QAfterFilterCondition>
+      photoIdElementLessThan(
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'photos',
+        property: r'photoId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosElementBetween(
-    String lower,
-    String upper, {
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdElementBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'photos',
+        property: r'photoId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition>
-      photosElementStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'photos',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosElementEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'photos',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosElementContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'photos',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosElementMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'photos',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition>
-      photosElementIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'photos',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition>
-      photosElementIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'photos',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosLengthEqualTo(
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdLengthEqualTo(
       int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'photos',
+        r'photoId',
         length,
         true,
         length,
@@ -1084,10 +837,10 @@ extension LocationQueryFilter
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosIsEmpty() {
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'photos',
+        r'photoId',
         0,
         true,
         0,
@@ -1096,10 +849,10 @@ extension LocationQueryFilter
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosIsNotEmpty() {
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'photos',
+        r'photoId',
         0,
         false,
         999999,
@@ -1108,13 +861,13 @@ extension LocationQueryFilter
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosLengthLessThan(
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdLengthLessThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'photos',
+        r'photoId',
         0,
         true,
         length,
@@ -1124,13 +877,13 @@ extension LocationQueryFilter
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition>
-      photosLengthGreaterThan(
+      photoIdLengthGreaterThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'photos',
+        r'photoId',
         length,
         include,
         999999,
@@ -1139,7 +892,7 @@ extension LocationQueryFilter
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> photosLengthBetween(
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1147,7 +900,7 @@ extension LocationQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'photos',
+        r'photoId',
         lower,
         includeLower,
         upper,
@@ -1157,54 +910,46 @@ extension LocationQueryFilter
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition> userIdEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'userId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition> userIdGreaterThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'userId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition> userIdLessThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'userId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition> userIdBetween(
-    String lower,
-    String upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1213,75 +958,6 @@ extension LocationQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> userIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> userIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> userIdContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> userIdMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'userId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> userIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'userId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterFilterCondition> userIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'userId',
-        value: '',
       ));
     });
   }
@@ -1303,18 +979,6 @@ extension LocationQuerySortBy on QueryBuilder<Location, Location, QSortBy> {
   QueryBuilder<Location, Location, QAfterSortBy> sortByDescriptionDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterSortBy> sortByFriendId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'friendId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterSortBy> sortByFriendIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'friendId', Sort.desc);
     });
   }
 
@@ -1378,18 +1042,6 @@ extension LocationQuerySortThenBy
   QueryBuilder<Location, Location, QAfterSortBy> thenByDescriptionDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterSortBy> thenByFriendId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'friendId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Location, Location, QAfterSortBy> thenByFriendIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'friendId', Sort.desc);
     });
   }
 
@@ -1463,13 +1115,6 @@ extension LocationQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Location, Location, QDistinct> distinctByFriendId(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'friendId', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<Location, Location, QDistinct> distinctByLatitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'latitude');
@@ -1489,16 +1134,15 @@ extension LocationQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Location, Location, QDistinct> distinctByPhotos() {
+  QueryBuilder<Location, Location, QDistinct> distinctByPhotoId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'photos');
+      return query.addDistinctBy(r'photoId');
     });
   }
 
-  QueryBuilder<Location, Location, QDistinct> distinctByUserId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Location, Location, QDistinct> distinctByUserId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'userId', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'userId');
     });
   }
 }
@@ -1514,12 +1158,6 @@ extension LocationQueryProperty
   QueryBuilder<Location, String, QQueryOperations> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'description');
-    });
-  }
-
-  QueryBuilder<Location, String?, QQueryOperations> friendIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'friendId');
     });
   }
 
@@ -1541,13 +1179,13 @@ extension LocationQueryProperty
     });
   }
 
-  QueryBuilder<Location, List<String>, QQueryOperations> photosProperty() {
+  QueryBuilder<Location, List<int>, QQueryOperations> photoIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'photos');
+      return query.addPropertyName(r'photoId');
     });
   }
 
-  QueryBuilder<Location, String, QQueryOperations> userIdProperty() {
+  QueryBuilder<Location, int, QQueryOperations> userIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'userId');
     });

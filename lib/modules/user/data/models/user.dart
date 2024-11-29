@@ -8,19 +8,19 @@ part 'user.g.dart';
 class User {
   Id id = Isar.autoIncrement;
 
-  final String firstName;
-  final String lastName;
+  String firstName;
+  String lastName;
 
   @Index(unique: true)
-  final String email;
+  String email;
 
   @Index(unique: true)
-  final String phoneNumber;
+  String phoneNumber;
 
-  final String password;
-  final String? profilePhoto;
-  final List<String>? friendId;
-  final List<String>? locationId;
+  String password;
+  String? profilePhoto;
+  List<int>? friendId;
+  List<int>? locationId;
 
   User({
     required this.id,
@@ -43,10 +43,10 @@ class User {
         password: json["password"],
         profilePhoto: json["profilePhoto"],
         friendId: json["friendId"] != null
-            ? List<String>.from(json["friendId"].map((x) => x))
+            ? List<int>.from(json["friendId"].map((x) => x))
             : null,
         locationId: json["locationId"] != null
-            ? List<String>.from(json["locationId"].map((x) => x))
+            ? List<int>.from(json["locationId"].map((x) => x))
             : null,
       );
 
@@ -58,11 +58,10 @@ class User {
         "phoneNumber": phoneNumber,
         "password": password,
         "profilePhoto": profilePhoto,
-        "friendId": friendId != null
-            ? List<dynamic>.from(friendId!.map((x) => x))
-            : null,
+        "friendId":
+            friendId != null ? List<int>.from(friendId!.map((x) => x)) : null,
         "locationId": locationId != null
-            ? List<dynamic>.from(locationId!.map((x) => x))
+            ? List<int>.from(locationId!.map((x) => x))
             : null,
       };
 }

@@ -9,14 +9,13 @@ class Location {
   Id id = Isar.autoIncrement;
 
   @Index(unique: true)
-  final String name;
+  String name;
 
-  final double latitude;
-  final double longitude;
-  final String description;
-  final List<String> photos;
-  final String userId;
-  String? friendId;
+  double latitude;
+  double longitude;
+  String description;
+  List<int> photoId;
+  int userId;
 
   Location({
     required this.id,
@@ -24,9 +23,8 @@ class Location {
     required this.latitude,
     required this.longitude,
     required this.description,
-    required this.photos,
+    required this.photoId,
     required this.userId,
-    this.friendId,
   });
 
   factory Location.fromJson(Map<String, dynamic> json) => Location(
@@ -35,9 +33,8 @@ class Location {
         latitude: json["latitude"],
         longitude: json["longitude"],
         description: json["description"],
-        photos: List<String>.from(json["photos"].map((x) => x)),
+        photoId: List<int>.from(json["photoId"].map((x) => x)),
         userId: json["userId"],
-        friendId: json["friendId"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,9 +43,8 @@ class Location {
         "latitude": latitude,
         "longitude": longitude,
         "description": description,
-        "photos": List<dynamic>.from(photos.map((x) => x)),
+        "photoId": List<int>.from(photoId.map((x) => x)),
         "userId": userId,
-        "friendId": friendId,
       };
 }
 

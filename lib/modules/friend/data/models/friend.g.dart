@@ -35,7 +35,7 @@ const FriendSchema = CollectionSchema(
     r'locationId': PropertySchema(
       id: 3,
       name: r'locationId',
-      type: IsarType.stringList,
+      type: IsarType.longList,
     ),
     r'phoneNumber': PropertySchema(
       id: 4,
@@ -46,6 +46,11 @@ const FriendSchema = CollectionSchema(
       id: 5,
       name: r'profilePhoto',
       type: IsarType.string,
+    ),
+    r'userId': PropertySchema(
+      id: 6,
+      name: r'userId',
+      type: IsarType.long,
     )
   },
   estimateSize: _friendEstimateSize,
@@ -53,34 +58,7 @@ const FriendSchema = CollectionSchema(
   deserialize: _friendDeserialize,
   deserializeProp: _friendDeserializeProp,
   idName: r'id',
-  indexes: {
-    r'email': IndexSchema(
-      id: -26095440403582047,
-      name: r'email',
-      unique: true,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'email',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    ),
-    r'phoneNumber': IndexSchema(
-      id: 5414128966131364535,
-      name: r'phoneNumber',
-      unique: true,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'phoneNumber',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    )
-  },
+  indexes: {},
   links: {},
   embeddedSchemas: {},
   getId: _friendGetId,
@@ -98,13 +76,7 @@ int _friendEstimateSize(
   bytesCount += 3 + object.email.length * 3;
   bytesCount += 3 + object.firstName.length * 3;
   bytesCount += 3 + object.lastName.length * 3;
-  bytesCount += 3 + object.locationId.length * 3;
-  {
-    for (var i = 0; i < object.locationId.length; i++) {
-      final value = object.locationId[i];
-      bytesCount += value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.locationId.length * 8;
   bytesCount += 3 + object.phoneNumber.length * 3;
   {
     final value = object.profilePhoto;
@@ -124,9 +96,10 @@ void _friendSerialize(
   writer.writeString(offsets[0], object.email);
   writer.writeString(offsets[1], object.firstName);
   writer.writeString(offsets[2], object.lastName);
-  writer.writeStringList(offsets[3], object.locationId);
+  writer.writeLongList(offsets[3], object.locationId);
   writer.writeString(offsets[4], object.phoneNumber);
   writer.writeString(offsets[5], object.profilePhoto);
+  writer.writeLong(offsets[6], object.userId);
 }
 
 Friend _friendDeserialize(
@@ -140,9 +113,10 @@ Friend _friendDeserialize(
     firstName: reader.readString(offsets[1]),
     id: id,
     lastName: reader.readString(offsets[2]),
-    locationId: reader.readStringList(offsets[3]) ?? [],
+    locationId: reader.readLongList(offsets[3]) ?? [],
     phoneNumber: reader.readString(offsets[4]),
     profilePhoto: reader.readStringOrNull(offsets[5]),
+    userId: reader.readLong(offsets[6]),
   );
   return object;
 }
@@ -161,11 +135,13 @@ P _friendDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readLongList(offset) ?? []) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -181,113 +157,6 @@ List<IsarLinkBase<dynamic>> _friendGetLinks(Friend object) {
 
 void _friendAttach(IsarCollection<dynamic> col, Id id, Friend object) {
   object.id = id;
-}
-
-extension FriendByIndex on IsarCollection<Friend> {
-  Future<Friend?> getByEmail(String email) {
-    return getByIndex(r'email', [email]);
-  }
-
-  Friend? getByEmailSync(String email) {
-    return getByIndexSync(r'email', [email]);
-  }
-
-  Future<bool> deleteByEmail(String email) {
-    return deleteByIndex(r'email', [email]);
-  }
-
-  bool deleteByEmailSync(String email) {
-    return deleteByIndexSync(r'email', [email]);
-  }
-
-  Future<List<Friend?>> getAllByEmail(List<String> emailValues) {
-    final values = emailValues.map((e) => [e]).toList();
-    return getAllByIndex(r'email', values);
-  }
-
-  List<Friend?> getAllByEmailSync(List<String> emailValues) {
-    final values = emailValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'email', values);
-  }
-
-  Future<int> deleteAllByEmail(List<String> emailValues) {
-    final values = emailValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'email', values);
-  }
-
-  int deleteAllByEmailSync(List<String> emailValues) {
-    final values = emailValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'email', values);
-  }
-
-  Future<Id> putByEmail(Friend object) {
-    return putByIndex(r'email', object);
-  }
-
-  Id putByEmailSync(Friend object, {bool saveLinks = true}) {
-    return putByIndexSync(r'email', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByEmail(List<Friend> objects) {
-    return putAllByIndex(r'email', objects);
-  }
-
-  List<Id> putAllByEmailSync(List<Friend> objects, {bool saveLinks = true}) {
-    return putAllByIndexSync(r'email', objects, saveLinks: saveLinks);
-  }
-
-  Future<Friend?> getByPhoneNumber(String phoneNumber) {
-    return getByIndex(r'phoneNumber', [phoneNumber]);
-  }
-
-  Friend? getByPhoneNumberSync(String phoneNumber) {
-    return getByIndexSync(r'phoneNumber', [phoneNumber]);
-  }
-
-  Future<bool> deleteByPhoneNumber(String phoneNumber) {
-    return deleteByIndex(r'phoneNumber', [phoneNumber]);
-  }
-
-  bool deleteByPhoneNumberSync(String phoneNumber) {
-    return deleteByIndexSync(r'phoneNumber', [phoneNumber]);
-  }
-
-  Future<List<Friend?>> getAllByPhoneNumber(List<String> phoneNumberValues) {
-    final values = phoneNumberValues.map((e) => [e]).toList();
-    return getAllByIndex(r'phoneNumber', values);
-  }
-
-  List<Friend?> getAllByPhoneNumberSync(List<String> phoneNumberValues) {
-    final values = phoneNumberValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'phoneNumber', values);
-  }
-
-  Future<int> deleteAllByPhoneNumber(List<String> phoneNumberValues) {
-    final values = phoneNumberValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'phoneNumber', values);
-  }
-
-  int deleteAllByPhoneNumberSync(List<String> phoneNumberValues) {
-    final values = phoneNumberValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'phoneNumber', values);
-  }
-
-  Future<Id> putByPhoneNumber(Friend object) {
-    return putByIndex(r'phoneNumber', object);
-  }
-
-  Id putByPhoneNumberSync(Friend object, {bool saveLinks = true}) {
-    return putByIndexSync(r'phoneNumber', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByPhoneNumber(List<Friend> objects) {
-    return putAllByIndex(r'phoneNumber', objects);
-  }
-
-  List<Id> putAllByPhoneNumberSync(List<Friend> objects,
-      {bool saveLinks = true}) {
-    return putAllByIndexSync(r'phoneNumber', objects, saveLinks: saveLinks);
-  }
 }
 
 extension FriendQueryWhereSort on QueryBuilder<Friend, Friend, QWhere> {
@@ -361,95 +230,6 @@ extension FriendQueryWhere on QueryBuilder<Friend, Friend, QWhereClause> {
         upper: upperId,
         includeUpper: includeUpper,
       ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterWhereClause> emailEqualTo(String email) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'email',
-        value: [email],
-      ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterWhereClause> emailNotEqualTo(
-      String email) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'email',
-              lower: [],
-              upper: [email],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'email',
-              lower: [email],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'email',
-              lower: [email],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'email',
-              lower: [],
-              upper: [email],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterWhereClause> phoneNumberEqualTo(
-      String phoneNumber) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'phoneNumber',
-        value: [phoneNumber],
-      ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterWhereClause> phoneNumberNotEqualTo(
-      String phoneNumber) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'phoneNumber',
-              lower: [],
-              upper: [phoneNumber],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'phoneNumber',
-              lower: [phoneNumber],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'phoneNumber',
-              lower: [phoneNumber],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'phoneNumber',
-              lower: [],
-              upper: [phoneNumber],
-              includeUpper: false,
-            ));
-      }
     });
   }
 }
@@ -898,55 +678,47 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
   }
 
   QueryBuilder<Friend, Friend, QAfterFilterCondition> locationIdElementEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'locationId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Friend, Friend, QAfterFilterCondition>
       locationIdElementGreaterThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'locationId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Friend, Friend, QAfterFilterCondition> locationIdElementLessThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'locationId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Friend, Friend, QAfterFilterCondition> locationIdElementBetween(
-    String lower,
-    String upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -955,78 +727,6 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterFilterCondition>
-      locationIdElementStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'locationId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterFilterCondition> locationIdElementEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'locationId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterFilterCondition> locationIdElementContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'locationId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterFilterCondition> locationIdElementMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'locationId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterFilterCondition>
-      locationIdElementIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'locationId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Friend, Friend, QAfterFilterCondition>
-      locationIdElementIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'locationId',
-        value: '',
       ));
     });
   }
@@ -1391,6 +1091,58 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
       ));
     });
   }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> userIdEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> userIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> userIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> userIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'userId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension FriendQueryObject on QueryBuilder<Friend, Friend, QFilterCondition> {}
@@ -1455,6 +1207,18 @@ extension FriendQuerySortBy on QueryBuilder<Friend, Friend, QSortBy> {
   QueryBuilder<Friend, Friend, QAfterSortBy> sortByProfilePhotoDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'profilePhoto', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterSortBy> sortByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterSortBy> sortByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -1531,6 +1295,18 @@ extension FriendQuerySortThenBy on QueryBuilder<Friend, Friend, QSortThenBy> {
       return query.addSortBy(r'profilePhoto', Sort.desc);
     });
   }
+
+  QueryBuilder<Friend, Friend, QAfterSortBy> thenByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterSortBy> thenByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
+    });
+  }
 }
 
 extension FriendQueryWhereDistinct on QueryBuilder<Friend, Friend, QDistinct> {
@@ -1574,6 +1350,12 @@ extension FriendQueryWhereDistinct on QueryBuilder<Friend, Friend, QDistinct> {
       return query.addDistinctBy(r'profilePhoto', caseSensitive: caseSensitive);
     });
   }
+
+  QueryBuilder<Friend, Friend, QDistinct> distinctByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'userId');
+    });
+  }
 }
 
 extension FriendQueryProperty on QueryBuilder<Friend, Friend, QQueryProperty> {
@@ -1601,7 +1383,7 @@ extension FriendQueryProperty on QueryBuilder<Friend, Friend, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Friend, List<String>, QQueryOperations> locationIdProperty() {
+  QueryBuilder<Friend, List<int>, QQueryOperations> locationIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'locationId');
     });
@@ -1616,6 +1398,12 @@ extension FriendQueryProperty on QueryBuilder<Friend, Friend, QQueryProperty> {
   QueryBuilder<Friend, String?, QQueryOperations> profilePhotoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'profilePhoto');
+    });
+  }
+
+  QueryBuilder<Friend, int, QQueryOperations> userIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'userId');
     });
   }
 }

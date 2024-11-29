@@ -7,23 +7,27 @@ part 'photo.g.dart';
 @collection
 class Photo {
   Id id = Isar.autoIncrement;
+  int locationId;
   String photoBytes;
   double latitude;
   double longitude;
 
   Photo({
     required this.photoBytes,
+    required this.locationId,
     required this.latitude,
     required this.longitude,
   });
 
   factory Photo.fromJson(Map<String, dynamic> json) => Photo(
+        locationId: json["locationId"],
         photoBytes: json["photoBytes"],
         latitude: json["latitude"],
         longitude: json["longitude"],
       );
 
   Map<String, dynamic> toJson() => {
+        "locationId": locationId,
         "photoBytes": photoBytes,
         "latitude": latitude,
         "longitude": longitude,
