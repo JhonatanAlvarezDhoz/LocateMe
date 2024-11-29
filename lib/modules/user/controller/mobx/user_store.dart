@@ -15,6 +15,7 @@ abstract class UserStoreBase with Store {
   final UcChangeProfilePhoto ucChangeProfilePhoto;
   final UcDeleteUser ucDeleteUser;
   final UcGetUsersNoParams getUsersNoParams;
+  final UcLoginUser ucLoginUser;
 
   UserStoreBase({
     required this.ucCreateUser,
@@ -23,12 +24,17 @@ abstract class UserStoreBase with Store {
     required this.ucChangeProfilePhoto,
     required this.ucDeleteUser,
     required this.getUsersNoParams,
+    required this.ucLoginUser,
   });
 
+  @observable
+  int? userId;
   @observable
   bool isLoading = false;
   @observable
   bool isCreated = false;
+  @observable
+  bool isLogin = false;
   @observable
   bool isDelete = false;
   @observable
@@ -52,8 +58,33 @@ abstract class UserStoreBase with Store {
         errorMessage = "No pudo crear el usuario. Intente mas tarde";
       }
       isCreated = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
+      errorMessage = e.toString();
+    }
+  }
+
+  @action
+  Future<void> loginUser(String email, String password) async {
+    isLoading = true;
+    errorMessage = null;
+
+    try {
+      final result = await ucLoginUser.call(
+          params: UcLoginUserParams(email: email, password: password));
+      if (!result[0]) {
+        errorMessage = "Usuario o contraseña invalidos";
+      } else {
+        isLogin = result[0];
+        userId = result[1];
+      }
+
+      isLoading = false;
+    } catch (e) {
+      isLoading = false;
+      log("Hols ${e.toString()}");
       errorMessage = e.toString();
     }
   }
@@ -67,7 +98,9 @@ abstract class UserStoreBase with Store {
       final result = await getUsersNoParams.call();
 
       userList = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -83,7 +116,9 @@ abstract class UserStoreBase with Store {
           params: UcUpdateUserParams(userId: userId, user: user));
 
       isDelete = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -99,7 +134,9 @@ abstract class UserStoreBase with Store {
           params: UcChangePasswordParams(userId: userId, password: password));
 
       isChangePassword = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -116,7 +153,9 @@ abstract class UserStoreBase with Store {
               userId: userId, pictureBase64: pictureBase64));
 
       isChangePassword = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -132,7 +171,9 @@ abstract class UserStoreBase with Store {
           await ucDeleteUser.call(params: UcDeleteUserParams(userId: userId));
 
       isDelete = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }

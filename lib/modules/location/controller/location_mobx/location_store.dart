@@ -47,8 +47,11 @@ abstract class LocationStoreBase with Store {
       if (!result) {
         errorMessage = "No pudo crear la ubicacion. Intente mas tarde";
       }
+
       isCreated = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -64,7 +67,9 @@ abstract class LocationStoreBase with Store {
           params: UcGetLocationByUserIdParams(userId: userId));
 
       locationList = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -83,7 +88,9 @@ abstract class LocationStoreBase with Store {
         errorMessage = "No pudo agregar la ubicacion. Intente mas tarde";
       }
       isAddPhotoToLocation = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -99,7 +106,9 @@ abstract class LocationStoreBase with Store {
           params: UcDeleteLocationParams(locationId: locationId));
 
       isDelete = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }

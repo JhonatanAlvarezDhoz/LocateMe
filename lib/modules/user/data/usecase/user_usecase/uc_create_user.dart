@@ -29,8 +29,8 @@ class UcCreateUser extends UseCase<bool, UcCreateUserParams> {
               "Hubo un error al momento de crear el usuario. Por favor contactar con el administrador.");
       }
     } catch (e) {
-      log("Catch CreateUser : ${e.toString()}");
-      throw Exception();
+      log(e.toString());
+      throw Exception("ya existe un usuarion con ese email o telefono");
     }
   }
 }

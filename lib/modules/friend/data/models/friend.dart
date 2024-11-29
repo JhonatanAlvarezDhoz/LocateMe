@@ -6,7 +6,7 @@ part 'friend.g.dart';
 
 @collection
 class Friend {
-  Id id = Isar.autoIncrement;
+  Id? id = Isar.autoIncrement;
   String firstName;
   String lastName;
   String email;
@@ -16,7 +16,7 @@ class Friend {
   List<int> locationId;
 
   Friend({
-    required this.id,
+    this.id,
     required this.firstName,
     required this.lastName,
     required this.email,

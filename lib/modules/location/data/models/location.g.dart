@@ -84,7 +84,12 @@ int _locationEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.description.length * 3;
   bytesCount += 3 + object.name.length * 3;
-  bytesCount += 3 + object.photoId.length * 8;
+  {
+    final value = object.photoId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 8;
+    }
+  }
   return bytesCount;
 }
 
@@ -114,7 +119,7 @@ Location _locationDeserialize(
     latitude: reader.readDouble(offsets[1]),
     longitude: reader.readDouble(offsets[2]),
     name: reader.readString(offsets[3]),
-    photoId: reader.readLongList(offsets[4]) ?? [],
+    photoId: reader.readLongList(offsets[4]),
     userId: reader.readLong(offsets[5]),
   );
   return object;
@@ -136,7 +141,7 @@ P _locationDeserializeProp<P>(
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readLongList(offset) ?? []) as P;
+      return (reader.readLongList(offset)) as P;
     case 5:
       return (reader.readLong(offset)) as P;
     default:
@@ -145,7 +150,7 @@ P _locationDeserializeProp<P>(
 }
 
 Id _locationGetId(Location object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _locationGetLinks(Location object) {
@@ -463,7 +468,23 @@ extension LocationQueryFilter
     });
   }
 
-  QueryBuilder<Location, Location, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<Location, Location, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<Location, Location, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<Location, Location, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -473,7 +494,7 @@ extension LocationQueryFilter
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition> idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -486,7 +507,7 @@ extension LocationQueryFilter
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition> idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -499,8 +520,8 @@ extension LocationQueryFilter
   }
 
   QueryBuilder<Location, Location, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -765,6 +786,22 @@ extension LocationQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'photoId',
+      ));
+    });
+  }
+
+  QueryBuilder<Location, Location, QAfterFilterCondition> photoIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'photoId',
       ));
     });
   }
@@ -1179,7 +1216,7 @@ extension LocationQueryProperty
     });
   }
 
-  QueryBuilder<Location, List<int>, QQueryOperations> photoIdProperty() {
+  QueryBuilder<Location, List<int>?, QQueryOperations> photoIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'photoId');
     });

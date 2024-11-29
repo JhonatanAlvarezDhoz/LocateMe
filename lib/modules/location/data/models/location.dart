@@ -6,7 +6,7 @@ part 'location.g.dart';
 
 @collection
 class Location {
-  Id id = Isar.autoIncrement;
+  Id? id = Isar.autoIncrement;
 
   @Index(unique: true)
   String name;
@@ -14,16 +14,16 @@ class Location {
   double latitude;
   double longitude;
   String description;
-  List<int> photoId;
+  List<int>? photoId;
   int userId;
 
   Location({
-    required this.id,
+    this.id,
     required this.name,
     required this.latitude,
     required this.longitude,
     required this.description,
-    required this.photoId,
+    this.photoId,
     required this.userId,
   });
 
@@ -33,7 +33,9 @@ class Location {
         latitude: json["latitude"],
         longitude: json["longitude"],
         description: json["description"],
-        photoId: List<int>.from(json["photoId"].map((x) => x)),
+        photoId: json["photoId"]
+            ? List<int>.from(json["photoId"].map((x) => x))
+            : null,
         userId: json["userId"],
       );
 
@@ -43,7 +45,8 @@ class Location {
         "latitude": latitude,
         "longitude": longitude,
         "description": description,
-        "photoId": List<int>.from(photoId.map((x) => x)),
+        "photoId":
+            photoId == null ? null : List<int>.from(photoId!.map((x) => x)),
         "userId": userId,
       };
 }

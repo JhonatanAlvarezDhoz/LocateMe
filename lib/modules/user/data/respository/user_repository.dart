@@ -16,6 +16,22 @@ class UserRepository {
     });
   }
 
+  Future<List> login(String email, String password) async {
+    bool isLogin = false;
+    int? userId;
+    final User? user =
+        await isar.users.filter().emailEqualTo(email).findFirst();
+    if (user != null) {
+      if (user.password == password) {
+        isLogin = true;
+        userId = user.id;
+      } else {
+        isLogin = false;
+      }
+    }
+    return [isLogin, userId];
+  }
+
   Future<List<User>> getUsers() async {
     return await isar.users.where().findAll();
   }

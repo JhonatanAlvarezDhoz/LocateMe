@@ -46,7 +46,9 @@ abstract class FriendStoreBase with Store {
         errorMessage = "No pudo agregar un amigo. Intente mas tarde";
       }
       isCreated = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -65,7 +67,9 @@ abstract class FriendStoreBase with Store {
         errorMessage = "No pudo agregar la ubicacion. Intente mas tarde";
       }
       isAddLocationToFriend = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -81,7 +85,9 @@ abstract class FriendStoreBase with Store {
           params: UcGetFrienByUserIdParams(userId: userId));
 
       friendList = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -97,7 +103,9 @@ abstract class FriendStoreBase with Store {
           params: UcDeleteFriendParams(friendId: friendId));
 
       isDelete = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }

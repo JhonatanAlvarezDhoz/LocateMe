@@ -43,7 +43,9 @@ abstract class PhotoStoreBase with Store {
         errorMessage = "No pudo crear la photo. Intente mas tarde";
       }
       isCreated = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -59,7 +61,9 @@ abstract class PhotoStoreBase with Store {
           params: UcGetPhotoByLocationIdParams(locationId: locationId));
 
       photoList = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }
@@ -75,7 +79,9 @@ abstract class PhotoStoreBase with Store {
           params: UcDeletePhotoParams(photoId: photoId));
 
       isDelete = result;
+      isLoading = false;
     } catch (e) {
+      isLoading = false;
       log(e.toString());
       errorMessage = e.toString();
     }

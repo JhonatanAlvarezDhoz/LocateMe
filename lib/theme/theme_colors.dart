@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 /// A utility class for defining theme colors used throughout the application.
 class ThemeColors extends Color {
   /// Private constructor to prevent instantiation of this class.
@@ -39,4 +41,8 @@ class ThemeColors extends Color {
 
   /// Defines a ligth border color used in the application.
   static const Color ligthBorderColor = Color(0xFFBEBFC0);
+
+  static const Color redColor = Color(0xFF95241C);
+
+  static const Color greenColor = Color(0xFF1F5320);
 }

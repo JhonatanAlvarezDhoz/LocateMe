@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:locate_me/base/usecase/use_case.dart';
-import 'package:locate_me/modules/friend/data/models/friend.dart';
 import 'package:locate_me/modules/location/data/models/location.dart';
 import 'package:locate_me/modules/location/data/repository/location_repository.dart';
 
@@ -26,12 +25,11 @@ class UcGetLocationByUserId
         params!.userId,
       );
 
-      switch (response.runtimeType == List<Friend>) {
+      switch (response.runtimeType == List<Location>) {
         case true:
           return response;
         case false:
-          throw UseCaseException(
-              "No pudo obtener las ubicaciones. Intente mas tarde");
+          return response;
         default:
           throw UseCaseException(
               "Hubo un error al momento de obtener las ubicaciones. Por favor contactar con el administrador.");

@@ -81,12 +81,12 @@ Photo _photoDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Photo(
+    id: id,
     latitude: reader.readDouble(offsets[0]),
     locationId: reader.readLong(offsets[1]),
     longitude: reader.readDouble(offsets[2]),
     photoBytes: reader.readString(offsets[3]),
   );
-  object.id = id;
   return object;
 }
 
@@ -111,7 +111,7 @@ P _photoDeserializeProp<P>(
 }
 
 Id _photoGetId(Photo object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _photoGetLinks(Photo object) {
@@ -198,7 +198,23 @@ extension PhotoQueryWhere on QueryBuilder<Photo, Photo, QWhereClause> {
 }
 
 extension PhotoQueryFilter on QueryBuilder<Photo, Photo, QFilterCondition> {
-  QueryBuilder<Photo, Photo, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<Photo, Photo, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<Photo, Photo, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<Photo, Photo, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -208,7 +224,7 @@ extension PhotoQueryFilter on QueryBuilder<Photo, Photo, QFilterCondition> {
   }
 
   QueryBuilder<Photo, Photo, QAfterFilterCondition> idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -221,7 +237,7 @@ extension PhotoQueryFilter on QueryBuilder<Photo, Photo, QFilterCondition> {
   }
 
   QueryBuilder<Photo, Photo, QAfterFilterCondition> idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -234,8 +250,8 @@ extension PhotoQueryFilter on QueryBuilder<Photo, Photo, QFilterCondition> {
   }
 
   QueryBuilder<Photo, Photo, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

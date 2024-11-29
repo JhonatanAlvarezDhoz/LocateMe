@@ -148,7 +148,7 @@ P _friendDeserializeProp<P>(
 }
 
 Id _friendGetId(Friend object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _friendGetLinks(Friend object) {
@@ -495,7 +495,23 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Friend, Friend, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<Friend, Friend, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -505,7 +521,7 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
   }
 
   QueryBuilder<Friend, Friend, QAfterFilterCondition> idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -518,7 +534,7 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
   }
 
   QueryBuilder<Friend, Friend, QAfterFilterCondition> idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -531,8 +547,8 @@ extension FriendQueryFilter on QueryBuilder<Friend, Friend, QFilterCondition> {
   }
 
   QueryBuilder<Friend, Friend, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

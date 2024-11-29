@@ -1,10 +1,8 @@
+export 'package:locate_me/base/widgets/rectangle_image_picker.dart';
 export 'package:locate_me/base/widgets/custom_borders.dart';
 export 'package:locate_me/base/widgets/w_rounded_text_form_field.dart';
-
 export 'package:locate_me/base/widgets/w_profile_buttom.dart';
-
 export 'package:locate_me/base/widgets/w_custom_app_bar.dart';
-
 export 'package:locate_me/base/widgets/custom_bottom_navigation_bar.dart';
 export 'package:locate_me/base/widgets/icon_navbar.dart';
 export 'package:locate_me/base/widgets/outlined_button.dart';
