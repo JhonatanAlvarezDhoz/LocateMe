@@ -41,7 +41,10 @@ class Injector {
             ucDeleteUser: UcDeleteUser(userRepository: userRepository),
             getUsersNoParams:
                 UcGetUsersNoParams(userRepository: userRepository),
-            ucLoginUser: UcLoginUser(userRepository: userRepository)),
+            ucLoginUser: UcLoginUser(userRepository: userRepository),
+            ucAddFriendToUser:
+                UcAddFriendToUser(userRepository: userRepository),
+            ucGetUserById: UcGetUserById(userRepository: userRepository)),
       ),
       Provider<FriendStore>(
           create: (_) => FriendStore(

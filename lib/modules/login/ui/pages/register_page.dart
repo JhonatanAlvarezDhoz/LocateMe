@@ -145,6 +145,8 @@ class RegisterPage extends StatelessWidget {
       email: formValues?['email'],
       phoneNumber: formValues?['phoneNumber'],
       password: formValues?['password'],
+      friendId: [],
+      locationId: [],
     );
 
     // Call createUser method from UserStore

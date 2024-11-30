@@ -90,6 +90,22 @@ mixin _$FriendStore on FriendStoreBase, Store {
     });
   }
 
+  late final _$friendAtom =
+      Atom(name: 'FriendStoreBase.friend', context: context);
+
+  @override
+  Friend? get friend {
+    _$friendAtom.reportRead();
+    return super.friend;
+  }
+
+  @override
+  set friend(Friend? value) {
+    _$friendAtom.reportWrite(value, super.friend, () {
+      super.friend = value;
+    });
+  }
+
   late final _$friendListAtom =
       Atom(name: 'FriendStoreBase.friendList', context: context);
 
@@ -148,6 +164,7 @@ isCreated: ${isCreated},
 isDelete: ${isDelete},
 isAddLocationToFriend: ${isAddLocationToFriend},
 errorMessage: ${errorMessage},
+friend: ${friend},
 friendList: ${friendList}
     ''';
   }

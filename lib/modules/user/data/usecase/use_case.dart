@@ -1,3 +1,5 @@
+export 'package:locate_me/modules/user/data/usecase/user_usecase/uc_get_user_by_id.dart';
+export 'package:locate_me/modules/user/data/usecase/user_usecase/uc_add_friend_to_user.dart';
 export 'package:locate_me/modules/user/data/usecase/session_usecase/uc_create_session.dart';
 export 'package:locate_me/modules/user/data/usecase/session_usecase/uc_delete_session.dart';
 export 'package:locate_me/modules/user/data/usecase/session_usecase/uc_get_session.dart';

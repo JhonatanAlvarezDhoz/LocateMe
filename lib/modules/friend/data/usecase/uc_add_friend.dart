@@ -10,27 +10,20 @@ class UcAddFriendParams {
   UcAddFriendParams({required this.friend});
 }
 
-class UcAddFriend extends UseCase<bool, UcAddFriendParams> {
+class UcAddFriend extends UseCase<List, UcAddFriendParams> {
   final FrinedRepository friendRepository;
 
   UcAddFriend({required this.friendRepository});
   @override
-  Future<bool> call({UcAddFriendParams? params}) async {
+  Future<List> call({UcAddFriendParams? params}) async {
     try {
-      final bool response = await friendRepository.addFriend(params!.friend);
+      final dynamic response = await friendRepository.addFriend(params!.friend);
+      log(response[1].firstName);
 
-      switch (response) {
-        case true:
-          return true;
-        case false:
-          return false;
-        default:
-          throw UseCaseException(
-              "Hubo un error al momento de agregar un amigo. Por favor contactar con el administrador.");
-      }
+      return response;
     } catch (e) {
-      log("Catch CreateUser : ${e.toString()}");
-      throw Exception();
+      log("Catch Adfriend : ${e.toString()}");
+      throw Exception(e.toString());
     }
   }
 }

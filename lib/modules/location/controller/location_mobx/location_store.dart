@@ -24,6 +24,8 @@ abstract class LocationStoreBase with Store {
   @observable
   bool isLoading = false;
   @observable
+  bool showPickImage = false;
+  @observable
   bool isCreated = false;
   @observable
   bool isDelete = false;
@@ -55,6 +57,11 @@ abstract class LocationStoreBase with Store {
       log(e.toString());
       errorMessage = e.toString();
     }
+  }
+
+  @action
+  Future<void> showPickImageButtom() async {
+    showPickImage = !showPickImage;
   }
 
   @action

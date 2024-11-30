@@ -32,6 +32,8 @@ abstract class FriendStoreBase with Store {
   @observable
   String? errorMessage;
   @observable
+  Friend? friend;
+  @observable
   List<Friend> friendList = [];
 
   @action
@@ -42,11 +44,12 @@ abstract class FriendStoreBase with Store {
     try {
       final result =
           await ucAddFriend.call(params: UcAddFriendParams(friend: friend));
-      if (!result) {
+      friend = result[1];
+      isCreated = true;
+      isLoading = false;
+      if (result[0] == 0) {
         errorMessage = "No pudo agregar un amigo. Intente mas tarde";
       }
-      isCreated = result;
-      isLoading = false;
     } catch (e) {
       isLoading = false;
       log(e.toString());

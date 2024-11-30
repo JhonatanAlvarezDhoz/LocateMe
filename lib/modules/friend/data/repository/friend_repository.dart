@@ -6,13 +6,13 @@ class FrinedRepository {
 
   FrinedRepository({required this.isar});
 
-  Future<bool> addFriend(Friend friend) async {
+  Future<List> addFriend(Friend friend) async {
     return await isar.writeTxn(() async {
       final created = await isar.friends.put(friend);
-      if (created <= 0) {
-        return false;
-      }
-      return true;
+
+      final friendId = await isar.friends.put(friend);
+      final Friend? createdFriend = await isar.friends.get(friendId);
+      return [created, createdFriend];
     });
   }
 

@@ -41,6 +41,22 @@ mixin _$UserStore on UserStoreBase, Store {
     });
   }
 
+  late final _$isAddFriendToUserAtom =
+      Atom(name: 'UserStoreBase.isAddFriendToUser', context: context);
+
+  @override
+  bool get isAddFriendToUser {
+    _$isAddFriendToUserAtom.reportRead();
+    return super.isAddFriendToUser;
+  }
+
+  @override
+  set isAddFriendToUser(bool value) {
+    _$isAddFriendToUserAtom.reportWrite(value, super.isAddFriendToUser, () {
+      super.isAddFriendToUser = value;
+    });
+  }
+
   late final _$isCreatedAtom =
       Atom(name: 'UserStoreBase.isCreated', context: context);
 
@@ -137,6 +153,21 @@ mixin _$UserStore on UserStoreBase, Store {
     });
   }
 
+  late final _$userAtom = Atom(name: 'UserStoreBase.user', context: context);
+
+  @override
+  User? get user {
+    _$userAtom.reportRead();
+    return super.user;
+  }
+
+  @override
+  set user(User? value) {
+    _$userAtom.reportWrite(value, super.user, () {
+      super.user = value;
+    });
+  }
+
   late final _$userListAtom =
       Atom(name: 'UserStoreBase.userList', context: context);
 
@@ -150,6 +181,22 @@ mixin _$UserStore on UserStoreBase, Store {
   set userList(List<User> value) {
     _$userListAtom.reportWrite(value, super.userList, () {
       super.userList = value;
+    });
+  }
+
+  late final _$firndIdsListAtom =
+      Atom(name: 'UserStoreBase.firndIdsList', context: context);
+
+  @override
+  List<int> get firndIdsList {
+    _$firndIdsListAtom.reportRead();
+    return super.firndIdsList;
+  }
+
+  @override
+  set firndIdsList(List<int> value) {
+    _$firndIdsListAtom.reportWrite(value, super.firndIdsList, () {
+      super.firndIdsList = value;
     });
   }
 
@@ -167,6 +214,14 @@ mixin _$UserStore on UserStoreBase, Store {
   @override
   Future<void> loginUser(String email, String password) {
     return _$loginUserAsyncAction.run(() => super.loginUser(email, password));
+  }
+
+  late final _$getUserByIdAsyncAction =
+      AsyncAction('UserStoreBase.getUserById', context: context);
+
+  @override
+  Future<void> getUserById(int userId) {
+    return _$getUserByIdAsyncAction.run(() => super.getUserById(userId));
   }
 
   late final _$getUsersAsyncAction =
@@ -194,6 +249,15 @@ mixin _$UserStore on UserStoreBase, Store {
         .run(() => super.changePassword(userId, password));
   }
 
+  late final _$addFriendToUserAsyncAction =
+      AsyncAction('UserStoreBase.addFriendToUser', context: context);
+
+  @override
+  Future<void> addFriendToUser(int userId, List<int> friendIds) {
+    return _$addFriendToUserAsyncAction
+        .run(() => super.addFriendToUser(userId, friendIds));
+  }
+
   late final _$changeProfilePhotoAsyncAction =
       AsyncAction('UserStoreBase.changeProfilePhoto', context: context);
 
@@ -216,13 +280,16 @@ mixin _$UserStore on UserStoreBase, Store {
     return '''
 userId: ${userId},
 isLoading: ${isLoading},
+isAddFriendToUser: ${isAddFriendToUser},
 isCreated: ${isCreated},
 isLogin: ${isLogin},
 isDelete: ${isDelete},
 isChangePassword: ${isChangePassword},
 errorMessage: ${errorMessage},
 message: ${message},
-userList: ${userList}
+user: ${user},
+userList: ${userList},
+firndIdsList: ${firndIdsList}
     ''';
   }
 }

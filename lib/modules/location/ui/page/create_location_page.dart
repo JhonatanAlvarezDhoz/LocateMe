@@ -10,6 +10,7 @@ import 'package:locate_me/base/constants/app_sizes.dart';
 import 'package:locate_me/base/widgets/widgets.dart';
 import 'package:locate_me/modules/location/controller/location_mobx/location_store.dart';
 import 'package:locate_me/modules/location/data/models/location.dart';
+import 'package:locate_me/routes/app_routes.dart';
 import 'package:locate_me/services/location_service.dart';
 import 'package:locate_me/theme/theme_colors.dart';
 import 'package:locate_me/utils/utils.dart';
@@ -25,7 +26,6 @@ class CreateLocationPage extends StatefulWidget {
 class _CreateLocationPageState extends State<CreateLocationPage> {
   Position? _position;
   LocationService? locationService;
-  // final List<XFile?> _images = [null];
 
   @override
   void initState() {
@@ -33,17 +33,6 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
     locationService = LocationService();
     getPosition();
   }
-
-  // int get maxImageSelectors => 3;
-  // void _addOrRemoveImage(XFile? image, int index) {
-  //   setState(() {
-  //     if (index == _images.length - 1 && _images.length < maxImageSelectors) {
-  //       _images.add(null);
-  //       _images.insert(0, image);
-  //     }
-  //     _images[index] = image;
-  //   });
-  // }
 
   void getPosition() async {
     if (locationService != null) {
@@ -109,26 +98,6 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
                     ],
                   ),
                 ),
-                // SingleChildScrollView(
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: List.generate(1, (index) {
-                //       return FormBuilderField<XFile>(
-                //           name: 'image_file',
-                //           initialValue: _images[0],
-                //           builder: (FormFieldState<XFile?> field) {
-                //             return RectangleImagePicker(
-                //               image: _images[0],
-                //               onImagePicked: (image) {
-                //                 _addOrRemoveImage(image, index);
-                //                 field.didChange(image);
-                //               },
-                //             );
-                //           });
-                //     }),
-                //   ),
-                // ),
                 gapH24,
                 CustomButton(
                   text: "Crear",
@@ -175,7 +144,7 @@ class _CreateLocationPageState extends State<CreateLocationPage> {
             ),
           );
 
-          Navigator.of(context).pop();
+          Navigator.of(context).pushNamed(AppRoutes.baseePage);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             CustomSnackBar(

@@ -25,6 +25,22 @@ mixin _$LocationStore on LocationStoreBase, Store {
     });
   }
 
+  late final _$showPickImageAtom =
+      Atom(name: 'LocationStoreBase.showPickImage', context: context);
+
+  @override
+  bool get showPickImage {
+    _$showPickImageAtom.reportRead();
+    return super.showPickImage;
+  }
+
+  @override
+  set showPickImage(bool value) {
+    _$showPickImageAtom.reportWrite(value, super.showPickImage, () {
+      super.showPickImage = value;
+    });
+  }
+
   late final _$isCreatedAtom =
       Atom(name: 'LocationStoreBase.isCreated', context: context);
 
@@ -131,6 +147,15 @@ mixin _$LocationStore on LocationStoreBase, Store {
         .run(() => super.createLocation(location));
   }
 
+  late final _$showPickImageButtomAsyncAction =
+      AsyncAction('LocationStoreBase.showPickImageButtom', context: context);
+
+  @override
+  Future<void> showPickImageButtom() {
+    return _$showPickImageButtomAsyncAction
+        .run(() => super.showPickImageButtom());
+  }
+
   late final _$getLocationByUserIdAsyncAction =
       AsyncAction('LocationStoreBase.getLocationByUserId', context: context);
 
@@ -161,6 +186,7 @@ mixin _$LocationStore on LocationStoreBase, Store {
   String toString() {
     return '''
 isLoading: ${isLoading},
+showPickImage: ${showPickImage},
 isCreated: ${isCreated},
 isDelete: ${isDelete},
 isAddPhotoToLocation: ${isAddPhotoToLocation},

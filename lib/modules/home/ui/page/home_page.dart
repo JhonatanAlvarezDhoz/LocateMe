@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:locate_me/base/widgets/widgets.dart';
@@ -25,8 +27,11 @@ class _HomePageState extends State<HomePage> {
   void _loadLocations() async {
     final userStore = Provider.of<UserStore>(context, listen: false);
     final sessionStore = Provider.of<SessionStore>(context, listen: false);
-    await userStore.getUsers();
+
     await sessionStore.getSesseion();
+    await userStore.getUsers();
+    log(sessionStore.session!.toJson().toString());
+    await userStore.getUserById(sessionStore.session!.userId);
   }
 
   @override
@@ -63,12 +68,15 @@ class _HomePageState extends State<HomePage> {
                     itemCount: userList.length,
                     itemBuilder: (context, index) {
                       final user = userList[index];
-                      return UserCard(user: user);
+                      return UserCard(
+                        user: user,
+                        sessionStore: sessionStore,
+                        userStore: userStore,
+                      );
                     }),
               );
             },
           ),
-          // UserCard(user: user),
         ],
       ),
     ));

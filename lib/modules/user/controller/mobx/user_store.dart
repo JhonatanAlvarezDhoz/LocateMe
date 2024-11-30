@@ -16,21 +16,26 @@ abstract class UserStoreBase with Store {
   final UcDeleteUser ucDeleteUser;
   final UcGetUsersNoParams getUsersNoParams;
   final UcLoginUser ucLoginUser;
+  final UcAddFriendToUser ucAddFriendToUser;
+  final UcGetUserById ucGetUserById;
 
-  UserStoreBase({
-    required this.ucCreateUser,
-    required this.ucUpdateUser,
-    required this.ucChangePassword,
-    required this.ucChangeProfilePhoto,
-    required this.ucDeleteUser,
-    required this.getUsersNoParams,
-    required this.ucLoginUser,
-  });
+  UserStoreBase(
+      {required this.ucCreateUser,
+      required this.ucUpdateUser,
+      required this.ucChangePassword,
+      required this.ucChangeProfilePhoto,
+      required this.ucDeleteUser,
+      required this.getUsersNoParams,
+      required this.ucLoginUser,
+      required this.ucAddFriendToUser,
+      required this.ucGetUserById});
 
   @observable
   int? userId;
   @observable
   bool isLoading = false;
+  @observable
+  bool isAddFriendToUser = false;
   @observable
   bool isCreated = false;
   @observable
@@ -44,7 +49,11 @@ abstract class UserStoreBase with Store {
   @observable
   String? message;
   @observable
+  User? user;
+  @observable
   List<User> userList = [];
+  @observable
+  List<int> firndIdsList = [];
 
   @action
   Future<void> createUser(User user) async {
@@ -85,6 +94,25 @@ abstract class UserStoreBase with Store {
     } catch (e) {
       isLoading = false;
       log("Hols ${e.toString()}");
+      errorMessage = e.toString();
+    }
+  }
+
+  @action
+  Future<void> getUserById(int userId) async {
+    isLoading = true;
+    errorMessage = null;
+
+    try {
+      final result =
+          await ucGetUserById.call(params: UcGetUserByIdParams(userId: userId));
+
+      isLoading = false;
+      log(result.toJson().toString());
+      user = result;
+    } catch (e) {
+      isLoading = false;
+      log(e.toString());
       errorMessage = e.toString();
     }
   }
@@ -138,6 +166,25 @@ abstract class UserStoreBase with Store {
     } catch (e) {
       isLoading = false;
       log(e.toString());
+      errorMessage = e.toString();
+    }
+  }
+
+  @action
+  Future<void> addFriendToUser(int userId, List<int> friendIds) async {
+    isLoading = true;
+    errorMessage = null;
+
+    try {
+      final result = await ucAddFriendToUser.call(
+          params:
+              UcAddFriendToUserParams(userId: userId, friendIds: friendIds));
+
+      isAddFriendToUser = result;
+      isLoading = false;
+    } catch (e) {
+      isLoading = false;
+      log("Hola ${e.toString()}");
       errorMessage = e.toString();
     }
   }

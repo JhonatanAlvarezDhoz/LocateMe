@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:isar/isar.dart';
 import 'package:locate_me/modules/user/data/models/user.dart';
 
@@ -37,7 +39,7 @@ class UserRepository {
   }
 
   Future<User?> getUsersById(int userId) async {
-    return await isar.users.filter().idEqualTo(userId).findFirst();
+    return await isar.users.get(userId);
   }
 
   Future<bool> updateUser(int userId, User user) async {
@@ -81,6 +83,22 @@ class UserRepository {
     return await isar.writeTxn(() async {
       userToEdit.profilePhoto = pictureBase64;
       final updated = await isar.users.put(userToEdit);
+      if (updated <= 0) {
+        return throw Exception("No pudo editar la tarea. Intente mas tarde");
+      }
+      return true;
+    });
+  }
+
+  Future<bool> addFriendToUser(int userId, List<int> friendIds) async {
+    final userToEdit = await isar.users.get(userId);
+    if (userToEdit == null) {
+      return false;
+    }
+    return await isar.writeTxn(() async {
+      userToEdit.friendId = friendIds;
+      final updated = await isar.users.put(userToEdit);
+      log("updated  $updated");
       if (updated <= 0) {
         return throw Exception("No pudo editar la tarea. Intente mas tarde");
       }

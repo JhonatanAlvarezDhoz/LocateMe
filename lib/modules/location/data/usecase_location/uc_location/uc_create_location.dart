@@ -31,7 +31,7 @@ class UcCreateLocation extends UseCase<bool, UcCreateLocationParams> {
       }
     } catch (e) {
       log("Catch CreateLocation : ${e.toString()}");
-      throw Exception();
+      throw UseCaseException("El nombre ${params!.location.name} ya existe");
     }
   }
 }

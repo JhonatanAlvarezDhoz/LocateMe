@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:locate_me/base/constants/app_sizes.dart';
 import 'package:locate_me/base/widgets/custom_text.dart';
 import 'package:locate_me/base/widgets/widgets.dart';
 import 'package:locate_me/modules/location/controller/location_mobx/location_store.dart';
@@ -29,7 +30,7 @@ class _LocationPageState extends State<LocationPage> {
     final sessionStore = Provider.of<SessionStore>(context, listen: false);
     sessionStore.getSesseion();
 
-    await locationStore.getLocationByUserId(sessionStore.session!.id!);
+    await locationStore.getLocationByUserId(sessionStore.session!.userId);
   }
 
   @override
@@ -49,30 +50,30 @@ class _LocationPageState extends State<LocationPage> {
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
-              Container(
-                height: constraints.maxHeight * .1,
-                color: Colors.red,
-                child: const Row(
-                  children: [
-                    SizedBox(
-                      height: 40,
-                      // child: ListView.builder(
-                      //     scrollDirection: Axis.horizontal,
-                      //     itemCount: 4,
-                      //     itemBuilder: (context, index) {
-                      //       return Container(
-                      //         height: 40,
-                      //         width: 120,
-                      //         decoration: BoxDecoration(
-                      //             border:
-                      //                 Border.all(color: ThemeColors.secondary),
-                      //             borderRadius: BorderRadius.circular(20)),
-                      //       );
-                      //     }),
-                    )
-                  ],
-                ),
-              ),
+              gapH20,
+              // SizedBox(
+              //   height: constraints.maxHeight * .1,
+              //   child: const Row(
+              //     children: [
+              //       SizedBox(
+              //         height: 40,
+              //         child: ListView.builder(
+              //             scrollDirection: Axis.horizontal,
+              //             itemCount: 4,
+              //             itemBuilder: (context, index) {
+              //               return Container(
+              //                 height: 40,
+              //                 width: 120,
+              //                 decoration: BoxDecoration(
+              //                     border:
+              //                         Border.all(color: ThemeColors.secondary),
+              //                     borderRadius: BorderRadius.circular(20)),
+              //               );
+              //             }),
+              //       )
+              //     ],
+              //   ),
+              // ),
               Observer(
                 builder: (BuildContext context) {
                   return SizedBox(

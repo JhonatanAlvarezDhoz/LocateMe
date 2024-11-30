@@ -30,8 +30,15 @@ class _BasePageState extends State<BasePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-          leading: const Icon(Icons.location_history),
-          title: CustomText(text: "LocateMe")),
+          leading: const Icon(
+            Icons.location_on,
+            size: 30,
+          ),
+          title: CustomText(
+            text: "LocateMe",
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+          )),
       body: Stack(
         children: [
           PageView(

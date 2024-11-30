@@ -15,10 +15,10 @@ List<IconNavBottomBar> iconNavBottomBar = [
   ),
   IconNavBottomBar(
     iconString: "assets/icons/ping.svg",
-    title: "Mapa",
+    title: "Lugares",
   ),
   IconNavBottomBar(
     iconString: "assets/icons/user.svg",
-    title: "Publicar",
+    title: "User",
   )
 ];
